@@ -1,0 +1,62 @@
+.market-report-grid
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+.market-report-card
+{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.market-report-card-link
+{
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.market-report-card-face
+{
+    position: relative;
+    min-height: 112px;
+    padding: 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700));
+    color: #fff;
+    overflow: hidden;
+}
+
+.market-report-card-face::after
+{
+    content: '';
+    position: absolute;
+    inset: auto -10% -35% auto;
+    width: 120px;
+    height: 120px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.market-report-card-title
+{
+    position: relative;
+    z-index: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.market-report-card-actions
+{
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+}

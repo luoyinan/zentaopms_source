@@ -1,0 +1,337 @@
+<?php
+/**
+ * The edit file of ticket module of ZenTaoPMS.
+ *
+ * @copyright   Copyright 2009-2023 禅道软件（青岛）有限公司(ZenTao Software (Qingdao) Co., Ltd. www.zentao.net)
+ * @license     ZPL(https://zpl.pub/page/zplv12.html) or AGPL(https://www.gnu.org/licenses/agpl-3.0.en.html)
+ * @author      Yuting Wang<wangyuting@easycorp.ltd>
+ * @package     ticket
+ * @link        https://www.zentao.net
+ */
+namespace zin;
+
+foreach($ticketSources as $ticketSource) unset($ticketSource->id);
+
+$disableStartedBy  = $ticket->status == 'wait';
+$disableResolvedBy = $ticket->status == 'wait' || $ticket->status == 'doing';
+$disableClosedBy   = $ticket->status != 'closed';
+
+detailHeader
+(
+    to::title
+    (
+        entityLabel
+        (
+            set::entityID($ticket->id),
+            set::level(1),
+            set::text($lang->ticket->edit),
+            set::reverse(true),
+            to::suffix($ticket->title)
+        )
+    ),
+);
+
+detailBody
+(
+    set::isForm(true),
+    sectionList
+    (
+        section
+        (
+            set::title($lang->ticket->title),
+            set::required(true),
+            formHidden('id', $ticket->id),
+            formGroup
+            (
+                set::name('title'),
+                set::value($ticket->title)
+            )
+        ),
+        section
+        (
+            set::title($lang->ticket->desc),
+            editor
+            (
+                set::name('desc'),
+                html($ticket->desc)
+            )
+        ),
+        section
+        (
+            set::title($lang->files),
+            fileSelector($ticket->createFiles ? set::defaultFiles(array_values($ticket->createFiles)) : null)
+        )
+    ),
+    history(),
+    detailSide
+    (
+        set::isForm(true),
+        tableData
+        (
+            setClass('mt-5'),
+            set::title($lang->ticket->legendBasicInfo),
+            set::tdClass('w-64'),
+            item
+            (
+                set::name($lang->ticket->product),
+                set::required(true),
+                picker
+                (
+                    set::name('product'),
+                    set::items($products),
+                    set::value($ticket->product),
+                    setData(array('on' => 'change', 'call' => 'changeProduct'))
+                ),
+            ),
+            item
+            (
+                set::name($lang->ticket->module),
+                set::required(true),
+                picker
+                (
+                    set::name('module'),
+                    set::items($modules),
+                    set::value($ticket->module)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->openedBuild),
+                picker
+                (
+                    set::name('openedBuild'),
+                    set::multiple(true),
+                    set::items($builds),
+                    set::value($ticket->openedBuild)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->type),
+                picker
+                (
+                    set::name('type'),
+                    set::items($lang->ticket->typeList),
+                    set::value($ticket->type)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->source),
+                !empty($feedback) ? a
+                (
+                    set::href(createLink('feedback', 'adminView', "feedbackID={$feedback->id}")),
+                    $feedback->id . ' ' . $feedback->title
+                ) : $lang->noData
+            ),
+            item
+            (
+                set::name($lang->ticket->status),
+                picker
+                (
+                    set::items($lang->ticket->statusList),
+                    set::value($ticket->status),
+                    set::disabled(true)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->pri),
+                priPicker
+                (
+                    set::name('pri'),
+                    set::items($lang->ticket->priList),
+                    set::value($ticket->pri)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->assignedTo),
+                picker
+                (
+                    set::name('assignedTo'),
+                    set::items($users),
+                    set::value($ticket->assignedTo)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->keywords),
+                input
+                (
+                    set::name('keywords'),
+                    set::value($ticket->keywords)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->mailto),
+                picker
+                (
+                    set::name('mailto'),
+                    set::multiple(true),
+                    set::items($users),
+                    set::value($ticket->mailto)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->estimate),
+                input
+                (
+                    set::name('estimate'),
+                    set::value($ticket->estimate)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->deadline),
+                datePicker
+                (
+                    set::name('deadline'),
+                    set::value($ticket->deadline)
+                )
+            )
+        ),
+        tableData
+        (
+            set::title($lang->ticket->legendLife),
+            set::tdClass('w-64'),
+            item
+            (
+                set::name($lang->ticket->createdBy),
+                picker
+                (
+                    set::disabled(true),
+                    set::items($users),
+                    set::value($ticket->openedBy)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->startedBy),
+                picker
+                (
+                    set::name('startedBy'),
+                    set::disabled($disableStartedBy),
+                    set::items($users),
+                    set::value($ticket->startedBy)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->startedDate),
+                datetimePicker
+                (
+                    set::name('startedDate'),
+                    set::disabled($disableStartedBy),
+                    set::value($ticket->startedDate)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->resolvedBy),
+                picker
+                (
+                    set::name('resolvedBy'),
+                    set::disabled($disableResolvedBy),
+                    set::items($users),
+                    set::value($ticket->resolvedBy)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->resolvedDate),
+                datetimePicker
+                (
+                    set::name('resolvedDate'),
+                    set::disabled($disableResolvedBy),
+                    set::value($ticket->resolvedDate)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->closedBy),
+                picker
+                (
+                    set::name('closedBy'),
+                    set::disabled(true),
+                    set::items($users),
+                    set::value($ticket->closedBy)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->closedDate),
+                datetimePicker
+                (
+                    set::name('closedDate'),
+                    set::disabled(true),
+                    set::value($ticket->closedDate)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->closedReason),
+                input
+                (
+                    set::name('closedReason'),
+                    set::disabled(true),
+                    set::value($ticket->closedReason)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->activatedBy),
+                picker
+                (
+                    set::name('activatedBy'),
+                    set::disabled(true),
+                    set::items($users),
+                    set::value($ticket->activatedBy)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->activatedCount),
+                input
+                (
+                    set::disabled(true),
+                    set::value($ticket->activatedCount)
+                )
+            ),
+            item
+            (
+                set::name($lang->ticket->lastEditedBy),
+                picker
+                (
+                    set::disabled(true),
+                    set::items($users),
+                    set::value($ticket->editedBy)
+                )
+            )
+        ),
+        tableData
+        (
+            setClass('mt-5'),
+            set::title($lang->ticket->contacts),
+            set::thClass('hidden'),
+            set::tdClass('w-64'),
+            item
+            (
+                formBatch
+                (
+                    set::actions(array()),
+                    set::tagName('div'),
+                    set::minRows(3),
+                    set::data($ticketSources),
+                    formBatchItem(set::name('customer'), set::label($lang->ticket->customer)),
+                    formBatchItem(set::name('contact'), set::label($lang->ticket->contact)),
+                    formBatchItem(set::name('notifyEmail'), set::label($lang->ticket->notifyEmail), set::width('100px'))
+                )
+            )
+        )
+    )
+);
+
+render();

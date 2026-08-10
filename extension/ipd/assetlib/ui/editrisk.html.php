@@ -1,0 +1,118 @@
+<?php
+/**
+ * The editrisk view file of assetlib module of ZenTaoPMS.
+ *
+ * @copyright   Copyright 2009-2026 禅道软件（青岛）有限公司(ZenTao Software (Qingdao) Co., Ltd. www.zentao.net)
+ * @license     ZPL(https://zpl.pub/page/zplv12.html) or AGPL(https://www.gnu.org/licenses/agpl-3.0.en.html)
+ * @author      Guangming Sun <sunguangming@chandao.com>
+ * @package     assetlib
+ * @link        https://www.zentao.net
+ */
+namespace zin;
+
+formPanel
+(
+    set::title($lang->assetlib->editRisk),
+    on::change('[name="impact"], [name="probability"]', 'computeRiskIndex'),
+    formGroup
+    (
+        set::width('1/2'),
+        set::label($lang->risk->name),
+        set::name('name'),
+        set::value($risk->name),
+        set::required(true)
+    ),
+    formGroup
+    (
+        set::width('1/2'),
+        set::label($lang->risk->category),
+        picker
+        (
+            set::name('category'),
+            set::items($lang->risk->categoryList),
+            set::value($risk->category)
+        )
+    ),
+    formGroup
+    (
+        set::width('1/2'),
+        set::label($lang->risk->strategy),
+        picker
+        (
+            set::name('strategy'),
+            set::items($lang->risk->strategyList),
+            set::value($risk->strategy)
+        )
+    ),
+    formGroup
+    (
+        set::width('1/2'),
+        set::label($lang->risk->impact),
+        picker
+        (
+            set::name('impact'),
+            set::items($lang->risk->impactList),
+            set::value($risk->impact)
+        )
+    ),
+    formGroup
+    (
+        set::width('1/2'),
+        set::label($lang->risk->probability),
+        picker
+        (
+            set::name('probability'),
+            set::items($lang->risk->probabilityList),
+            set::value($risk->probability)
+        )
+    ),
+    formGroup
+    (
+        set::width('1/2'),
+        set::label($lang->risk->rate),
+        input
+        (
+            set::name('rate'),
+            set::value($risk->rate),
+            set::readonly(true)
+        )
+    ),
+    formGroup
+    (
+        set::width('1/2'),
+        set::label($lang->risk->pri),
+        priPicker
+        (
+            set::name('pri'),
+            set::items($lang->risk->priList),
+            set::value($risk->pri)
+        )
+    ),
+    formGroup
+    (
+        set::label($lang->risk->prevention),
+        editor
+        (
+            set::name('prevention'),
+            set::value($risk->prevention)
+        )
+    ),
+    formGroup
+    (
+        set::label($lang->risk->remedy),
+        editor
+        (
+            set::name('remedy'),
+            set::value($risk->remedy)
+        )
+    ),
+    formGroup
+    (
+        set::label($lang->risk->resolution),
+        editor
+        (
+            set::name('resolution'),
+            set::value($risk->resolution)
+        )
+    )
+);

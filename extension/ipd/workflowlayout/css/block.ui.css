@@ -1,0 +1,5 @@
+.sort-box{ align-items: center !important;}
+.show-name-box{ align-items: center !important;}
+.blockList .block+.block{ margin-top: 1rem;}
+.sort-block-handler { cursor: move;}
+li.tab { display: block; margin-top: 1rem;}

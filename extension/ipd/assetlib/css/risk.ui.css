@@ -1,0 +1,4 @@
+#table-risk-list [class^=pri-] {border: none; font-size: .8125rem}
+#table-risk-list .pri-1 {color: rgb(255 73 18/var(--tw-text-opacity));}
+#table-risk-list .pri-2 {color: rgba(var(--color-warning-600-rgb),var(--tw-text-opacity));}
+#table-risk-list .pri-3 {color: rgba(var(--color-gray-600-rgb),var(--tw-text-opacity));}

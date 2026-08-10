@@ -1,0 +1,22 @@
+input[type="checkbox"].form-control:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+input[type="checkbox"].form-control:not(:focus) {
+    box-shadow: none;
+    outline: none;
+}
+
+/* 限制 dtable 内多选 picker 高度，超出部分隐藏 */
+#workflowlayout-admin_table .picker-select-multi.form-control {
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    overflow: hidden;
+}
+
+#workflowlayout-admin_table .picker-multi-selections {
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+}

@@ -1,0 +1,32 @@
+window.toggleDetail = function(event)
+{
+    if($(event.target).hasClass('icon-angle-top'))
+    {
+        $(event.target).removeClass('icon-angle-top');
+        $(event.target).addClass('icon-angle-down');
+        $(event.target).closest('.detail-section').find('.detail-section-content').addClass('hidden');
+    }
+    else
+    {
+        $(event.target).removeClass('icon-angle-down');
+        $(event.target).addClass('icon-angle-top');
+        $(event.target).closest('.detail-section').find('.detail-section-content').removeClass('hidden');
+    }
+}
+
+window.toggleOpinion = function(event)
+{
+    const id = $(event.target).closest('td').attr('id')
+    if($(event.target).hasClass('icon-angle-top'))
+    {
+        $(event.target).removeClass('icon-angle-top')
+        $(event.target).addClass('icon-angle-down')
+        $(event.target).closest('.table').find(`tr.${id}`).addClass('hidden')
+    }
+    else
+    {
+        $(event.target).removeClass('icon-angle-down')
+        $(event.target).addClass('icon-angle-top')
+        $(event.target).closest('.table').find(`tr.${id}`).removeClass('hidden')
+    }
+}

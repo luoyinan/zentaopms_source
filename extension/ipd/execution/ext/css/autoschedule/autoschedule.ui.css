@@ -1,0 +1,4 @@
+#mainContent > .panel-form {--zt-panel-form-max-width: auto;}
+.form-label.form-batch-label {position: relative; padding: 0; left: 0;}
+.buffer-box {left: -5px;}
+.form-horz .form-label.required:after {margin-left: .25rem;}

@@ -1,0 +1,125 @@
+.company-calendar-wrapper
+{
+    overflow: hidden;
+}
+
+.company-calendar-table
+{
+    min-width: max-content;
+    width: max-content;
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+.company-calendar-table thead th
+{
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    background: var(--color-canvas, #fff);
+    white-space: nowrap;
+}
+
+.company-calendar-table th,
+.company-calendar-table td
+{
+    min-width: 240px;
+    padding: 12px;
+    vertical-align: top;
+    background: var(--color-canvas, #fff);
+    border-right: 1px solid var(--color-border, #e5e7eb);
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.company-calendar-table .company-calendar-sticky
+{
+    position: sticky;
+    z-index: 3;
+    background: var(--color-canvas, #fff);
+}
+
+.company-calendar-table .company-calendar-col-dept
+{
+    left: 0;
+    min-width: 180px;
+    width: 180px;
+    max-width: 180px;
+    box-shadow: 1px 0 0 var(--color-border, #e5e7eb);
+}
+
+.company-calendar-table .company-calendar-col-user
+{
+    left: 180px;
+    min-width: 160px;
+    width: 160px;
+    max-width: 160px;
+    box-shadow: 1px 0 0 var(--color-border, #e5e7eb);
+}
+
+.company-calendar-table thead .company-calendar-col-dept,
+.company-calendar-table thead .company-calendar-col-user
+{
+    z-index: 6;
+}
+
+.company-calendar-table .company-calendar-col-date
+{
+    min-width: 240px;
+    width: 240px;
+    text-align: center;
+}
+
+.company-calendar-row-head
+{
+    font-weight: 600;
+    text-align: left;
+}
+
+.company-calendar-dept,
+.company-calendar-user
+{
+    word-break: break-word;
+}
+
+.company-calendar-day-cell
+{
+    min-width: 240px;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.company-calendar-day-cell.is-empty
+{
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.012), rgba(0, 0, 0, 0));
+}
+
+.company-calendar-work-list
+{
+    margin: 0;
+    padding-left: 18px;
+}
+
+.company-calendar-work-list li + li
+{
+    margin-top: 8px;
+}
+
+.company-calendar-work-link,
+.company-calendar-work-text
+{
+    display: inline;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.company-calendar-empty
+{
+    padding: 48px 16px;
+}
+
+.company-calendar-scroll{
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+}

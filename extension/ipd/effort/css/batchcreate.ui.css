@@ -1,0 +1,3 @@
+#effortBatchAddForm .effort-batch-heading {padding-bottom: 12px;}
+#effortBatchAddForm .effort-batch-toolbar .form-group-wrapper {min-width: 160px;}
+#effortBatchAddForm tr.effort-row-computed {transition: outline .8s, background .8s; outline: 1px solid transparent;}

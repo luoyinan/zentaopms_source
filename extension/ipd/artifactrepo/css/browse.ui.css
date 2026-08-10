@@ -1,0 +1,3 @@
+#spaceDropdown {justify-content: left; max-width: 10%;}
+#spaceDropdown > span {overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80%;}
+

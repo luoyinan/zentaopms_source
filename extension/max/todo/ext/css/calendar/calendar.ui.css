@@ -1,0 +1,22 @@
+#todoCalendar {min-height: 300px; margin: 0;}
+#todoObjectTabs .tabs-header {padding-bottom: 8px; border-bottom: 1px solid var(--color-border);}
+#todoObjectTabs .tabs-nav {gap: 12px; flex-wrap: wrap;}
+#todoObjectTabs .tabs-nav > .nav-item > a {display: flex; align-items: center; gap: 6px;}
+#todoObjectTabs .tab-content {padding-top: 12px;}
+#todoObjectTabs .todo-list {margin: 0; padding: 0;}
+#todoObjectTabs .todo-object-row + .todo-object-row {margin-top: 6px;}
+#todoObjectTabs .todo-item,
+#todoObjectTabs .todoList {display: block; line-height: 24px; border: 1px solid #EEEEEE; border-radius: 6px; padding: 8px 10px; position: relative; font-size: 12px; color: #343434; overflow: hidden; white-space: nowrap; transition: background-color .2s ease, box-shadow .2s ease, border-color .2s ease;}
+#todoObjectTabs .todo-item {cursor: grab;}
+#todoObjectTabs .todo-item:hover,
+#todoObjectTabs .todoList:hover {text-decoration: none; background-color: #f1f1f1; border-color: #ddd;}
+#todoObjectTabs .todo-item.is-dragging {cursor: grabbing; background: var(--color-canvas); box-shadow: 0 8px 18px rgba(0, 0, 0, .12);}
+.todo-object-empty {border: 1px dashed var(--color-border); border-radius: 8px; background: var(--color-canvas);}
+.todo-calendar-event {display: inline-flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%;}
+.todo-event-toggle {cursor: pointer;}
+.todo-event-title {overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.todo-event-pri {color: var(--color-gray-500);}
+#todoCalendar .calendar-td.is-droppable {outline: 1px dashed var(--color-primary-500); outline-offset: -2px; background: var(--color-primary-50);}
+#todoCalendar .calendar-td.is-dropping {background: var(--color-primary-100);}
+#todoCalendar .todo-drop-active { background: var(--color-primary-50, #edf3ff); box-shadow: inset 0 0 0 2px var(--color-primary-500, #2b6de5); }
+#todoCalendar .list-item .item-content {overflow: hidden;}

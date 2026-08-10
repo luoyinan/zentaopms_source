@@ -1,0 +1,192 @@
+<?php
+$config->bizVersion = '13.4';
+
+$filter->file->ajaxwopifiles = new stdclass();
+$filter->file->ajaxwopifiles->get['access_token'] = 'code';
+$filter->doc->default->cookie['checkedItem']      = 'reg::checked';
+$filter->doc->default->cookie['checkedFileItem']  = 'reg::checked';
+
+$filter->traincourse = new stdclass();
+$filter->traincourse->browse = new stdclass();
+$filter->traincourse->browse->cookie['courseModule'] = 'int';
+$filter->traincourse->admin = new stdclass();
+$filter->traincourse->admin->cookie['courseModule'] = 'int';
+
+if(!defined('TABLE_TRAINCOURSE'))       define('TABLE_TRAINCOURSE', '`' . $config->db->prefix . 'traincourse`');
+if(!defined('TABLE_TRAINCONTENTS'))     define('TABLE_TRAINCONTENTS', '`' . $config->db->prefix . 'traincontents`');
+if(!defined('TABLE_TRAINCATEGORY'))     define('TABLE_TRAINCATEGORY', '`' . $config->db->prefix . 'traincategory`');
+if(!defined('TABLE_TRAINRECORDS'))      define('TABLE_TRAINRECORDS', '`' . $config->db->prefix . 'trainrecords`');
+if(!defined('TABLE_PRACTICE'))          define('TABLE_PRACTICE', '`' . $config->db->prefix . 'practice`');
+if(!defined('TABLE_AI_KNOWLEDGELIB'))   define('TABLE_AI_KNOWLEDGELIB', '`' . $config->db->prefix . 'ai_knowledgelib`');
+if(!defined('TABLE_AI_KNOWLEDGEITEM'))  define('TABLE_AI_KNOWLEDGEITEM', '`' . $config->db->prefix . 'ai_knowledgeitem`');
+
+$config->objectTables['traincourse']        = TABLE_TRAINCOURSE;
+$config->objectTables['traincategory']      = TABLE_TRAINCATEGORY;
+$config->objectTables['traincontents']      = TABLE_TRAINCONTENTS;
+$config->objectTables['trainrecords']       = TABLE_TRAINRECORDS;
+$config->objectTables['practice']           = TABLE_PRACTICE;
+$config->objectTables['dimension']          = TABLE_DIMENSION;
+$config->objectTables['screen']             = TABLE_SCREEN;
+$config->objectTables['chart']              = TABLE_CHART;
+$config->objectTables['pivot']              = TABLE_PIVOT;
+$config->objectTables['dashboard']          = TABLE_DASHBOARD;
+$config->objectTables['chartgroup']         = TABLE_MODULE;
+$config->objectTables['approvalflowobject'] = TABLE_APPROVALFLOWOBJECT;
+
+/* 未登录用户可以访问的模块。The modules that can be accessed by the unlogged users. */
+$config->openMethods[] = 'file.ajaxwopifiles';
+$config->openMethods[] = 'traincourse.downloadcourse';
+
+/* 未登录用户可以访问的方法。The methods that can be accessed by the unlogged users. */
+$config->logonMethods[] = 'traincourse.playvideo';
+$config->logonMethods[] = 'traincourse.viewpdf';
+$config->logonMethods[] = 'metric.downloadtemplate';
+$config->logonMethods[] = 'metric.publish';
+$config->logonMethods[] = 'sqlbuilder.index';
+$config->logonMethods[] = 'charter.loadroadmapstories';
+$config->logonMethods[] = 'task.exportchart';
+$config->logonMethods[] = 'story.exportchart';
+$config->logonMethods[] = 'execution.exportchart';
+$config->logonMethods[] = 'doc.buildzentaoconfig';
+$config->logonMethods[] = 'testcase.exportchart';
+$config->logonMethods[] = 'project.exportchart';
+$config->logonMethods[] = 'ai.promptassignrole';
+$config->logonMethods[] = 'ai.promptselectdatasource';
+$config->logonMethods[] = 'ai.promptsetpurpose';
+$config->logonMethods[] = 'ai.promptsettargetform';
+$config->logonMethods[] = 'ai.promptfinalize';
+$config->logonMethods[] = 'ai.promptaudit';
+$config->logonMethods[] = 'ai.knowledgelibview';
+$config->logonMethods[] = 'ai.createtextknowledge';
+$config->logonMethods[] = 'ai.createfileknowledge';
+$config->logonMethods[] = 'ai.adddoc';
+$config->logonMethods[] = 'ai.knowledgecontentview';
+$config->logonMethods[] = 'ai.selectknowledgelib';
+$config->logonMethods[] = 'ai.batchdeleteknowledgeitem';
+$config->logonMethods[] = 'feedback.ajaxgetdropmenu';
+$config->logonMethods[] = 'flow.ajaxgetprevdata';
+$config->logonMethods[] = 'workflowgroup.ajaxgetdropmenu';
+
+/* Ajax 方法依赖的方法。The methods that Ajax methods depend on. */
+$config->ajaxDependencies['action.ajaxgetlist']                      = ['reporttemplate.browse', 'weekly.docviewer'];
+$config->ajaxDependencies['ai.ajaxbatchcreateknowledge']             = ['ai.adddoc', 'product.browse', 'bug.browse', 'execution.task', 'execution.story', 'testcase.browse', 'projectstory.story', 'productplan.story', 'productplan.bug', 'productplan.browsebylist', 'release.browse', 'projectrelease.browse', 'caselib.browse', 'feedback.admin', 'ticket.browse'];
+$config->ajaxDependencies['ai.ajaxgetapispaces']                     = ['ai.adddoc', 'ai.importfromdoc'];
+$config->ajaxDependencies['ai.ajaxgetassetlibs']                     = 'ai.importfromasset';
+$config->ajaxDependencies['ai.ajaxgetdoc']                           = ['doc.quick', 'ai.adddoc', 'ai.importfromdoc'];
+$config->ajaxDependencies['ai.ajaxgetdoclibs']                       = ['ai.adddoc', 'ai.importfromdoc'];
+$config->ajaxDependencies['ai.ajaxgetknowledgechunks']               = 'ai.searchknowledgelib';
+$config->ajaxDependencies['ai.ajaxgetknowledgelibs']                 = 'ai.selectknowledgelib';
+$config->ajaxDependencies['ai.ajaxgetknowledgeobjectlist']           = 'ai.selectknowledgelib';
+$config->ajaxDependencies['ai.ajaxsyncknowledgeitem']                = 'ai.selectknowledgelib';
+$config->ajaxDependencies['ai.ajaxupdateknowledgeitem']              = 'ai.knowledgelibview';
+$config->ajaxDependencies['approvalflow.ajaxgetfieldcontrol']        = 'approvalflow.design';
+$config->ajaxDependencies['artifactrepo.ajaxgetartifactrepos']       = 'artifactrepo.create';
+$config->ajaxDependencies['artifactrepo.ajaxupdateartifactrepos']    = 'artifactrepo.browse';
+$config->ajaxDependencies['attend.ajaxgetdeptusers']                 = 'attend.detail';
+$config->ajaxDependencies['bug.ajaxchangesubstatus']                 = ['execution.kanban', 'execution.taskkanban'];
+$config->ajaxDependencies['chart.ajaxgetconditionoptions']           = 'chart.filter';
+$config->ajaxDependencies['chart.ajaxgetdenominatortip']             = 'chart.design';
+$config->ajaxDependencies['chart.ajaxgetsysoptions']                 = 'chart.filter';
+$config->ajaxDependencies['chart.ajaxgettypeform']                   = 'chart.design';
+$config->ajaxDependencies['chart.ajaxgetwaterpolocalcoption']        = 'chart.design';
+$config->ajaxDependencies['chart.ajaxgetwaterpolofieldoption']       = 'chart.design';
+$config->ajaxDependencies['chart.ajaxgetwaterpoloform']              = 'chart.ajaxgettypeform';
+$config->ajaxDependencies['charter.ajaxgetcharterinfo']              = ['project.create', 'project.edit'];
+$config->ajaxDependencies['charter.ajaxgetplans']                    = 'isssue.resolve';
+$config->ajaxDependencies['charter.ajaxgetroadmaps']                 = ['charter.create', 'charter.edit'];
+$config->ajaxDependencies['convert.ajaxgetzentaodoclib']             = 'convert.mapconfluence2zentao';
+$config->ajaxDependencies['dataset.ajaxgettypeoptions']              = ['dataset.edit', 'dataset.create'];
+$config->ajaxDependencies['dataset.ajaxquery']                       = ['dataset.edit', 'dataset.create'];
+$config->ajaxDependencies['dataview.ajaxgetfieldname']               = ['dataview.querybase', 'chart.design'];
+$config->ajaxDependencies['dataview.ajaxgettabledata']               = 'dataview.browse';
+$config->ajaxDependencies['dataview.ajaxgettypeoptions']             = ['dataset.edit', 'dataset.create'];
+$config->ajaxDependencies['dataview.ajaxquery']                      = ['dataview.querybase', 'chart.design'];
+$config->ajaxDependencies['dimension.ajaxcheckbicontent']            = 'dimension.browse';
+$config->ajaxDependencies['doc.ajaxdiff']                            = ['ticket.browse', 'feedback.admin', 'reporttemplate.browse', 'weekly.docviewer', 'doc.buildzentaoconfig', 'doc.app', 'doc.selecttemplate'];
+$config->ajaxDependencies['doc.ajaxgetrelatedobjects']               = ['ticket.browse', 'feedback.admin', 'reporttemplate.browse', 'weekly.docviewer', 'doc.buildzentaoconfig', 'doc.app', 'doc.selecttemplate'];
+$config->ajaxDependencies['effort.ajaxgetefforts']                   = ['effort.calendar', 'execution.effortcalendar'];
+$config->ajaxDependencies['execution.ajaxgetefforts']                = ['effort.calendar', 'execution.effortcalendar'];
+$config->ajaxDependencies['execution.ajaxgetrelationtasks']          = ['execution.editrelation', 'execution.createrelation', 'execution.batcheditrelation'];
+$config->ajaxDependencies['execution.ajaxmaintainrelation']          = 'execution.gantt';
+$config->ajaxDependencies['faq.ajaxgetanswer']                       = 'feedback.comment';
+$config->ajaxDependencies['faq.ajaxgetmodules']                      = ['faq.edit', 'faq.create'];
+$config->ajaxDependencies['feedback.ajaxgetexecutionlang']           = ['my.selectproject', 'bug.edit', 'feedback.adminview', 'feedback.selectproject'];
+$config->ajaxDependencies['feedback.ajaxgetexecutions']              = ['feedback.admin', 'feedback.adminview', 'feedback.selectproject'];
+$config->ajaxDependencies['feedback.ajaxgetmodule']                  = ['feedback.edit', 'feedback.batchedit', 'feedback.showimport'];
+$config->ajaxDependencies['feedback.ajaxgetprojects']                = ['feedback.admin', 'feedback.adminview', 'feedback.selectproject'];
+$config->ajaxDependencies['feedback.ajaxgetstatus']                  = ['feedback.edit', 'feedback.review', 'feedback.create'];
+$config->ajaxDependencies['feedback.ajaxlike']                       = 'feedback.view';
+$config->ajaxDependencies['feedback.ajaxgetuserfeedback']            = ['todo.create', 'todo.edit', 'todo.batchcreate'];
+$config->ajaxDependencies['file.ajaxexport2mht']                     = ['pivot.exportdata', 'pivot.preview'];
+$config->ajaxDependencies['file.ajaxuploadlargefile']                = ['traincourse.createcourse', 'traincourse.editcourse'];
+$config->ajaxDependencies['file.ajaxwopifiles']                      = 'file.download';
+$config->ajaxDependencies['flow.ajaxgetnodes']                       = 'flow.operate';
+$config->ajaxDependencies['flow.ajaxgetpairs']                       = 'flow.showimport';
+$config->ajaxDependencies['flow.ajaxswitchbelong']                   = ['project.ajaxgetdropmenu', 'project.ajaxgetolddropmenu', 'bug.ajaxgetdropmenu', 'branch.ajaxgetdropmenu', 'product.ajaxgetdropmenu', 'product.ajaxgetolddropmenu', 'execution.ajaxgetdropmenu', 'program.ajaxgetdropmenu'];
+$config->ajaxDependencies['instance.ajaxgetcustoms']                 = ['instance.view', 'space.createapplication'];
+$config->ajaxDependencies['instance.ajaxuninstall']                  = ['space.browse', 'instance.view'];
+$config->ajaxDependencies['metric.ajaxcheck']                        = 'metric.implement';
+$config->ajaxDependencies['metric.ajaxdeduplicaterecord']            = 'metric.recalculate';
+$config->ajaxDependencies['metric.ajaxgetmetricresult']              = 'metric.implement';
+$config->ajaxDependencies['metric.ajaxsavecalculatedmetrics']        = 'metric.recalculate';
+$config->ajaxDependencies['metric.ajaxupdatehistorymetriclib']       = 'metric.recalculate';
+$config->ajaxDependencies['metric.ajaxupdatesinglemetriclib']        = 'metric.recalculate';
+$config->ajaxDependencies['metriclib.ajaxgetfilteroptions']          = 'metriclib.browse';
+$config->ajaxDependencies['pivot.ajaxgetcolumnform']                 = 'pivot.column';
+$config->ajaxDependencies['pivot.ajaxgetfieldselect']                = 'pivot.design';
+$config->ajaxDependencies['pivot.ajaxgetoptions']                    = 'pivot.design';
+$config->ajaxDependencies['pivot.ajaxgetpreviewresult']              = 'pivot.design';
+$config->ajaxDependencies['pivot.ajaxgetresultform']                 = 'pivot.design';
+$config->ajaxDependencies['pivot.ajaxsavefilters']                   = '';
+$config->ajaxDependencies['release.ajaxgetbyproduct']                = ['deploy.create', 'deploy.edit'];
+$config->ajaxDependencies['repo.ajaxgetbugs']                        = 'repo.ajaxgeteditorcontent';
+$config->ajaxDependencies['repo.ajaxgetcommitter']                   = ['repo.view', 'repo.diff'];
+$config->ajaxDependencies['repo.ajaxgetdiffeditorcontent']           = ['repo.diff', 'mr.diff'];
+$config->ajaxDependencies['repo.ajaxgeteditorcontent']               = 'repo.monaco';
+$config->ajaxDependencies['screen.ajaxgetoptions']                   = 'screen.designdetail';
+$config->ajaxDependencies['screen.ajaxgettreedata']                  = 'screen.design';
+$config->ajaxDependencies['task.ajaxchangesubstatus']                = '';
+$config->ajaxDependencies['task.ajaxgetrelation']                    = ['task.cancel', 'task.batchedit', 'task.edit'];
+$config->ajaxDependencies['testcase.ajaxselectstory']                = 'testcase.exporttemplate';
+$config->ajaxDependencies['ticket.ajaxgetmodule']                    = ['ticket.batchedit', 'ticket.showimport'];
+$config->ajaxDependencies['ticket.ajaxgetrepeattickets']             = 'ticket.batchclose';
+$config->ajaxDependencies['todo.ajaxchangedays']                     = 'todo.calendar';
+$config->ajaxDependencies['todo.ajaxgettodos']                       = 'todo.calendar';
+$config->ajaxDependencies['traincourse.ajaxfinishchapter']           = 'traincourse.viewchapter';
+$config->ajaxDependencies['traincourse.ajaxupdatepractice']          = 'traincourse.practice';
+$config->ajaxDependencies['traincourse.ajaxuploadlargefile']         = 'traincourse.uploadcourse';
+$config->ajaxDependencies['workflowaction.ajaxpreview']              = 'workflowaction.browse';
+$config->ajaxDependencies['workflow.ajaxgetappmenus']                = ['workflow.create', 'workflow.edit', 'workflow.copy', 'workflow.release'];
+$config->ajaxDependencies['workflow.ajaxgetapps']                    = ['workflow.create', 'workflow.edit', 'workflow.copy', 'workflow.release'];
+$config->ajaxDependencies['workflow.ajaxgetdropmenus']               = ['workflow.create', 'workflow.edit', 'workflow.copy', 'workflow.release'];
+$config->ajaxDependencies['workflow.ajaxviewdb']                     = 'workflow.quotedb';
+$config->ajaxDependencies['workflowdatasource.ajaxchecksql']         = 'workflowdatasource.browse';
+$config->ajaxDependencies['workflowdatasource.ajaxgetappmodules']    = '';
+$config->ajaxDependencies['workflowdatasource.ajaxgetmethodcomment'] = 'workflowdatasource.browse';
+$config->ajaxDependencies['workflowdatasource.ajaxgetmethodparams']  = 'workflowdatasource.browse';
+$config->ajaxDependencies['workflowdatasource.ajaxgetmodulemethods'] = 'workflowdatasource.browse';
+$config->ajaxDependencies['workflowfield.ajaxcheckfieldlength']      = '';
+$config->ajaxDependencies['workflowfield.ajaxgetdefaultcontrol']     = ['workflow.ui', 'workflowfield.showimport', 'workflowfield.browse'];
+$config->ajaxDependencies['workflowfield.ajaxgetfield']              = 'workflowrelation.admin';
+$config->ajaxDependencies['workflowfield.ajaxgetfieldcontrol']       = ['workflowaction.browse', 'workflowlabel.browse'];
+$config->ajaxDependencies['workflowfield.ajaxgetmoredefault']        = ['workflow.ui', 'workflowfield.browse'];
+$config->ajaxDependencies['workflowfield.ajaxgetparamoptions']       = 'workflowaction.browse';
+$config->ajaxDependencies['workflowfield.ajaxgetfieldoptions']       = ['workflowcondition.create','workflowcondition.edit','workflowhook.create','workflowhook.edit','workflowaction.browse', 'workflowlabel.browse'];
+$config->ajaxDependencies['workflowfield.ajaxgetsubstatuscontrol']   = '';
+$config->ajaxDependencies['workflowfield.ajaxview']                  = '';
+$config->ajaxDependencies['workflowhook.ajaxgetnumberfields']        = 'workflowaction.browse';
+$config->ajaxDependencies['workflowhook.ajaxgettablefields']         = 'workflowaction.browse';
+$config->ajaxDependencies['workflowreport.ajaxpreview']              = 'workflowreport.browse';
+
+if($config->edition != 'open')
+{
+    $config->featureGroup->other = array_merge($config->featureGroup->other, array('OA', 'traincourse'));
+}
+
+$config->excludeDropmenuList = array_merge($config->excludeDropmenuList, array('charter-browse', 'charter-create', 'charter-view', 'charter-edit', 'charter-completionapproval', 'charter-cancelprojectapproval', 'ticket-batchclose'));
+
+$config->cneExternalUrl = function_exists('getEnvData') ? getEnvData('CNE_EXTERNAL_URL', '') : '';
+
+if(!isset($filter->task->report)) $filter->task->report = new stdclass();
+$filter->task->report->cookie['productBrowseParam'] = 'int';
+$filter->task->report->cookie['moduleBrowseParam']  = 'int';

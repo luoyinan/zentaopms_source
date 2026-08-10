@@ -1,0 +1,152 @@
+.company-todo-wrapper
+{
+    overflow: hidden;
+}
+
+.company-todo-table
+{
+    min-width: max-content;
+    width: max-content;
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+.company-todo-table thead th
+{
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    background: var(--color-canvas, #fff);
+    white-space: nowrap;
+}
+
+.company-todo-table th,
+.company-todo-table td
+{
+    min-width: 280px;
+    padding: 12px;
+    vertical-align: top;
+    background: var(--color-canvas, #fff);
+    border-right: 1px solid var(--color-border, #e5e7eb);
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.company-todo-table .company-todo-sticky
+{
+    position: sticky;
+    z-index: 3;
+    background: var(--color-canvas, #fff);
+}
+
+.company-todo-table .company-todo-col-dept
+{
+    left: 0;
+    min-width: 180px;
+    width: 180px;
+    max-width: 180px;
+    box-shadow: 1px 0 0 var(--color-border, #e5e7eb);
+}
+
+.company-todo-table .company-todo-col-user
+{
+    left: 180px;
+    min-width: 160px;
+    width: 160px;
+    max-width: 160px;
+    box-shadow: 1px 0 0 var(--color-border, #e5e7eb);
+}
+
+.company-todo-table thead .company-todo-col-dept,
+.company-todo-table thead .company-todo-col-user
+{
+    z-index: 6;
+}
+
+.company-todo-table .company-todo-col-date
+{
+    min-width: 280px;
+    width: 280px;
+    text-align: center;
+}
+
+.company-todo-row-head
+{
+    font-weight: 600;
+    text-align: left;
+}
+
+.company-todo-dept,
+.company-todo-user,
+.company-todo-text
+{
+    word-break: break-word;
+}
+
+.company-todo-day-cell
+{
+    min-width: 280px;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.company-todo-day-cell.is-empty
+{
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.012), rgba(0, 0, 0, 0));
+}
+
+.company-todo-list
+{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.company-todo-item
+{
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    line-height: 1.6;
+}
+
+.company-todo-time
+{
+    flex: 0 0 92px;
+    color: var(--color-text-3, #6b7280);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.company-todo-time.is-empty
+{
+    opacity: 0;
+}
+
+.company-todo-text
+{
+    flex: 1;
+    min-width: 0;
+}
+
+.company-todo-empty
+{
+    padding: 48px 16px;
+}
+
+.company-todo-footer
+{
+    padding: 12px 16px;
+    color: var(--color-text-3, #6b7280);
+    border-top: 1px solid var(--color-border, #e5e7eb);
+}
+
+.company-todo-scroll
+{
+    height: calc(100vh - 150px);
+    overflow: auto;
+}

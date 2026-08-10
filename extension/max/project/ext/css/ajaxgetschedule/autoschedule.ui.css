@@ -1,0 +1,9 @@
+#panel-schedule .table > * > tr > * {padding: 10px 6px;}
+#panel-schedule td.active::after{content: "\e5ca"; font-family: ZentaoIcon; position: absolute; top: 14px; left: 22px; font-size: 18px}
+#panel-schedule td.active {position: relative;}
+#panel-schedule .table:not(.active) {display:none}
+
+#panel-schedule .setWorking {display:none;}
+#panel-schedule .outside:hover .setWorking {display:unset; background-color: rgba(var(--color-gray-100-rgb),var(--tw-bg-opacity));}
+#panel-schedule .outside:hover .label-date {display:none;}
+#panel-schedule .outside:hover .label-week {display:none;}

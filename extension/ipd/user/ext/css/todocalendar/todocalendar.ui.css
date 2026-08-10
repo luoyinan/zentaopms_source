@@ -1,0 +1,2 @@
+.switch-btn {width: 55%;}
+.switch-btn > a {width: 5rem; height: 1.75rem; --state-active-opacity: 0;}

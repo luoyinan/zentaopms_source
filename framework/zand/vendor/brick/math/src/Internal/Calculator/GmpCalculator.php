@@ -1,0 +1,106 @@
+<?php
+
+namespace Brick\Math\Internal\Calculator;
+
+use Brick\Math\Internal\Calculator;
+
+/**
+ * Calculator implementation built around the GMP library.
+ *
+ * @internal
+ *
+ * @psalm-immutable
+ */
+class GmpCalculator extends Calculator
+{
+    public function add($a, $b)
+    {
+        return \gmp_strval(\gmp_add($a, $b));
+    }
+
+    public function sub($a, $b)
+    {
+        return \gmp_strval(\gmp_sub($a, $b));
+    }
+
+    public function mul($a, $b)
+    {
+        return \gmp_strval(\gmp_mul($a, $b));
+    }
+
+    public function divQ($a, $b)
+    {
+        return \gmp_strval(\gmp_div_q($a, $b));
+    }
+
+    public function divR($a, $b)
+    {
+        return \gmp_strval(\gmp_div_r($a, $b));
+    }
+
+    public function divQR($a, $b)
+    {
+        [$q, $r] = \gmp_div_qr($a, $b);
+
+        return [
+            \gmp_strval($q),
+            \gmp_strval($r)
+        ];
+    }
+
+    public function pow($a, $e)
+    {
+        return \gmp_strval(\gmp_pow($a, $e));
+    }
+
+    public function modInverse($x, $m)
+    {
+        $result = \gmp_invert($x, $m);
+
+        if ($result === false) {
+            return null;
+        }
+
+        return \gmp_strval($result);
+    }
+
+    public function modPow($base, $exp, $mod)
+    {
+        return \gmp_strval(\gmp_powm($base, $exp, $mod));
+    }
+
+    public function gcd($a, $b)
+    {
+        return \gmp_strval(\gmp_gcd($a, $b));
+    }
+
+    public function fromBase($number, $base)
+    {
+        return \gmp_strval(\gmp_init($number, $base));
+    }
+
+    public function toBase($number, $base)
+    {
+        return \gmp_strval($number, $base);
+    }
+
+    public function and($a, $b)
+    {
+        return \gmp_strval(\gmp_and($a, $b));
+    }
+
+    public function or($a, $b)
+    {
+        return \gmp_strval(\gmp_or($a, $b));
+    }
+
+    public function xor($a, $b)
+    {
+        return \gmp_strval(\gmp_xor($a, $b));
+    }
+
+    public function sqrt($n)
+    {
+        return \gmp_strval(\gmp_sqrt($n));
+    }
+}
