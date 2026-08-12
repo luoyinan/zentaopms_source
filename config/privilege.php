@@ -36,6 +36,7 @@ $config->openMethods[] = 'user.login';
 $config->openMethods[] = 'user.refreshrandom';
 $config->openMethods[] = 'user.reset';
 $config->openMethods[] = 'user.resetpassword';
+$config->openMethods[] = 'dingtalk.login';
 $config->openMethods[] = 'gitfox.devopsintroduction';
 $config->openMethods[] = 'gitfox.installgitfox';
 $config->openMethods[] = 'gitfox.ajaxcheckgitfoxhealth';

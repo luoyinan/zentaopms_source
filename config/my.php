@@ -1,0 +1,19 @@
+<?php
+$config->installed     = true;
+$config->debug         = true;
+#$config->requestType   = 'GET';
+$config->requestType   = 'PATH_INFO';
+$config->timezone      = 'Asia/Shanghai';
+$config->db->driver    = 'mysql';
+$config->db->host      = '172.16.22.2';
+$config->db->port      = '3306';
+$config->db->name      = 'zentao';
+$config->db->user      = 'root';
+$config->db->encoding  = 'utf8mb4';
+$config->db->collation = 'utf8mb4_bin';
+$config->db->password  = '123456';
+$config->db->prefix    = 'zt_';
+$config->webRoot       = getWebRoot();
+$config->default->lang = 'zh-cn';
+$config->customSession   = true;
+$config->framework->filterCSRF = false;

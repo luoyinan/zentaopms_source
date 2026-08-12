@@ -25,6 +25,8 @@ $filter->default->get['_nocache']              = 'equal::1';
 $filter->default->get['tid']                   = 'reg::word';
 $filter->default->get['HTTP_X_REQUESTED_WITH'] = 'equal::XMLHttpRequest';
 
+$filter->default->get['authCode'] = 'reg::any';
+
 $filter->default->cookie['lang']        = 'reg::lang';
 $filter->default->cookie['theme']       = 'reg::word';
 $filter->default->cookie['fingerprint'] = 'reg::word';
