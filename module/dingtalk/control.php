@@ -53,8 +53,7 @@ class dingtalk extends control
         {
             $this->dingtalk->log('login() 失败: 钉钉API返回用户信息为空，authCode可能已过期');
             $loginLink = helper::createLink('user', 'login');
-            echo js::alert('钉钉登录验证失败，请联系管理员。');
-            return $this->locate($loginLink);
+            return print(js::alert('钉钉登录验证失败，请联系管理员。') . js::locate($loginLink));
         }
 
         $userId = $userInfo->userid;
@@ -65,10 +64,9 @@ class dingtalk extends control
         $user = $this->dingtalk->getUserByDingId($userId);
         if(!$user)
         {
-            $this->dingtalk->log('login() 失败: 未找到 unionId 对应的系统用户，请先绑定');
+            $this->dingtalk->log('login() 失败: 未找到 userid 对应的系统用户，请先绑定');
             $loginLink = helper::createLink('user', 'login');
-            echo js::alert('未找到绑定的系统用户，请先联系管理员绑定钉钉账号。');
-            return $this->locate($loginLink);
+            return print(js::alert('未找到绑定的系统用户，请先联系管理员绑定钉钉账号。') . js::locate($loginLink));
         }
 
         $this->dingtalk->log('login() 找到匹配用户, account: ' . $user->account . ', realname: ' . $user->realname);
@@ -85,5 +83,16 @@ class dingtalk extends control
         $this->dingtalk->log('login() 自动登录失败, user->login() 返回空');
         $loginLink = helper::createLink('user', 'login');
         return $this->locate($loginLink);
+    }
+
+    /**
+     * Sync DingTalk users to zt_user table.
+     *
+     * @access public
+     * @return void
+     */
+    public function syncUsers()
+    {
+        $this->dingtalk->syncUsers();
     }
 }
