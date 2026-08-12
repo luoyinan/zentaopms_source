@@ -60,15 +60,29 @@ class dingtalkModel extends model
     }
 
     /**
-     * Get access token from DingTalk.
+     * Get access token from DingTalk with local caching.
+     * Cache is stored in tmp/dingtalk.token.php with 6900s expiration.
      *
+     * @param  bool     $forceRefresh Whether to force refresh the token from API
      * @access public
      * @return string|false
      */
-    public function getAccessToken()
+    public function getAccessToken($forceRefresh = false)
     {
-        $this->log('getAccessToken() 开始获取 accessToken');
+        $this->log('getAccessToken() 开始获取 accessToken' . ($forceRefresh ? ' (强制刷新)' : ''));
 
+        /* Check local cache first. */
+        if(!$forceRefresh)
+        {
+            $cachedToken = $this->getCachedAccessToken();
+            if($cachedToken !== false)
+            {
+                $this->log('getAccessToken() 使用本地缓存的 accessToken');
+                return $cachedToken;
+            }
+        }
+
+        /* Fetch from DingTalk API. */
         $url    = $this->config->dingtalk->accessTokenAPI . $this->config->dingtalk->corpId . '/token';
         $params = array('client_id' => $this->config->dingtalk->appKey, 'client_secret' => $this->config->dingtalk->appSecret, 'grant_type' => 'client_credentials');
 
@@ -89,8 +103,127 @@ class dingtalkModel extends model
             return false;
         }
 
+        /* Cache the token with 6900s expiration. */
+        $this->saveCachedAccessToken($info->access_token);
+
         $this->log('getAccessToken() 成功获取 accessToken');
         return $info->access_token;
+    }
+
+    /**
+     * Get cached access token from local file.
+     *
+     * @access private
+     * @return string|false
+     */
+    private function getCachedAccessToken()
+    {
+        $cacheFile = $this->app->getTmpRoot() . 'dingtalk.token.php';
+        $this->log('getCachedAccessToken() 缓存文件路径: ' . $cacheFile);
+
+        if(!file_exists($cacheFile))
+        {
+            $this->log('getCachedAccessToken() 缓存文件不存在');
+            return false;
+        }
+
+        $data = file_get_contents($cacheFile);
+        if(empty($data))
+        {
+            $this->log('getCachedAccessToken() 缓存文件内容为空');
+            return false;
+        }
+
+        /* Strip PHP exit guard if present. */
+        $prefix = '<?php die(); ?>';
+        if(strncmp($data, $prefix, strlen($prefix)) === 0)
+        {
+            $data = trim(substr($data, strlen($prefix)));
+        }
+
+        $cache = json_decode($data);
+        if(!isset($cache->token) || !isset($cache->expireTime))
+        {
+            $this->log('getCachedAccessToken() 缓存数据格式错误: ' . $data);
+            return false;
+        }
+
+        /* Check if token is expired (6900s from cache time). */
+        if(time() >= $cache->expireTime)
+        {
+            $this->log('getCachedAccessToken() 本地缓存已过期, expireTime=' . $cache->expireTime . ', now=' . time());
+            return false;
+        }
+
+        $this->log('getCachedAccessToken() 缓存命中, token=' . substr($cache->token, 0, 10) . '...');
+        return $cache->token;
+    }
+
+    /**
+     * Save access token to local cache file.
+     *
+     * @param  string    $token
+     * @access private
+     * @return void
+     */
+    private function saveCachedAccessToken($token)
+    {
+        $cacheFile = $this->app->getTmpRoot() . 'dingtalk.token.php';
+        $this->log('saveCachedAccessToken() 写入缓存文件: ' . $cacheFile);
+
+        $cache = new stdClass();
+        $cache->token      = $token;
+        $cache->expireTime = time() + 6900; /* 6900s expiration (300s buffer before DingTalk's 7200s). */
+
+        $content = "<?php die(); ?>\n" . json_encode($cache);
+        $result = file_put_contents($cacheFile, $content);
+        if($result === false)
+        {
+            $this->log('saveCachedAccessToken() 写入缓存文件失败');
+        }
+        else
+        {
+            $this->log('saveCachedAccessToken() 缓存写入成功, 已写入 ' . $result . ' 字节');
+        }
+    }
+
+    /**
+     * Check if API response indicates token expiry and retry with fresh token.
+     *
+     * @param  string    $response Original API response
+     * @param  string    $url      API URL (passed by reference, updated on retry)
+     * @param  array     $params   POST parameters
+     * @access private
+     * @return string    Original response if token is valid, or retry response if expired
+     */
+    private function refreshTokenOnExpiry($response, &$url, $params)
+    {
+        if(empty($response)) return $response;
+
+        $info = json_decode($response);
+        if(!isset($info->errcode) || !in_array($info->errcode, array(40001, 40014))) return $response;
+
+        $this->log('refreshTokenOnExpiry() access_token 已过期(errcode=' . $info->errcode . '), 强制刷新并重试');
+
+        $newToken = $this->getAccessToken(true);
+        if(!$newToken)
+        {
+            $this->log('refreshTokenOnExpiry() 重新获取 accessToken 失败');
+            return $response;
+        }
+
+        /* Replace the old token in the URL with the new one. */
+        $url = preg_replace('/access_token=[^&]+/', 'access_token=' . $newToken, $url);
+
+        $retryResponse = common::http($url, $params, array(), array(), 'json');
+        if(empty($retryResponse))
+        {
+            $this->log('refreshTokenOnExpiry() 重试请求返回空结果');
+            return $response;
+        }
+
+        $this->log('refreshTokenOnExpiry() 重试成功');
+        return $retryResponse;
     }
 
     /**
@@ -134,7 +267,46 @@ class dingtalkModel extends model
         if(!isset($info->errcode) || $info->errcode != 0)
         {
             $this->log('getUserInfo() Step2 失败: errcode=' . (isset($info->errcode) ? $info->errcode : '无') . ', 响应内容: ' . $result);
-            return false;
+
+            /* Retry with fresh token if access_token is expired (40014, 40001, etc.). */
+            if(isset($info->errcode) && in_array($info->errcode, array(40001, 40014)))
+            {
+                $this->log('getUserInfo() Step2 access_token 已过期, 强制刷新并重试');
+
+                $newAccessToken = $this->getAccessToken(true);
+                if(!$newAccessToken)
+                {
+                    $this->log('getUserInfo() Step2 重试失败: 重新获取 accessToken 失败');
+                    return false;
+                }
+
+                $retryUrl    = $this->config->dingtalk->userInfoAPI . '?access_token=' . $newAccessToken;
+                $retryResult = common::http($retryUrl, $params, array(), array(), 'json');
+                if(empty($retryResult))
+                {
+                    $this->log('getUserInfo() Step2 重试失败: 钉钉API返回空结果');
+                    return false;
+                }
+
+                $retryInfo = json_decode($retryResult);
+                if(!isset($retryInfo->errcode) || $retryInfo->errcode != 0)
+                {
+                    $this->log('getUserInfo() Step2 重试失败: errcode=' . (isset($retryInfo->errcode) ? $retryInfo->errcode : '无') . ', 响应内容: ' . $retryResult);
+                    return false;
+                }
+
+                if(!isset($retryInfo->result) || !isset($retryInfo->result->userid))
+                {
+                    $this->log('getUserInfo() Step2 重试失败: 响应中没有 userid, 响应内容: ' . $retryResult);
+                    return false;
+                }
+
+                $info = $retryInfo;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         if(!isset($info->result) || !isset($info->result->userid))
@@ -216,6 +388,10 @@ class dingtalkModel extends model
 
         $params = array('dept_id' => $deptId);
         $response = common::http($url, $params, array(), array(), 'json');
+
+        /* Retry with fresh token if access_token is expired. */
+        $response = $this->refreshTokenOnExpiry($response, $url, $params);
+
         if(empty($response))
         {
             $this->log('getSubDepartments() dept_id=' . $deptId . ' 返回空结果');
@@ -268,6 +444,10 @@ class dingtalkModel extends model
         {
             $params = array('dept_id' => $deptId, 'cursor' => $cursor, 'size' => 100);
             $result = common::http($url, $params, array(), array(), 'json');
+
+            /* Retry with fresh token if access_token is expired. */
+            $result = $this->refreshTokenOnExpiry($result, $url, $params);
+
             if(empty($result))
             {
                 $this->log('getUserListByDept() dept_id=' . $deptId . ' 返回空结果');
