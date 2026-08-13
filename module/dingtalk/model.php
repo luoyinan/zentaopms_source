@@ -392,6 +392,7 @@ class dingtalkModel extends model
         /* Retry with fresh token if access_token is expired. */
         $response = $this->refreshTokenOnExpiry($response, $url, $params);
 
+        $this->log('getSubDepartments() dept_id=' . $deptId . ' 响应: ' . $response);
         if(empty($response))
         {
             $this->log('getSubDepartments() dept_id=' . $deptId . ' 返回空结果');
@@ -411,9 +412,16 @@ class dingtalkModel extends model
             return;
         }
 
-        /* The listsub API returns dept_list with sub-department objects. */
+        /* The listsub API returns result as a direct array of department objects. */
         $deptList = array();
-        if(isset($info->result->dept_list)) $deptList = $info->result->dept_list;
+        if(isset($info->result->dept_list))
+        {
+            $deptList = $info->result->dept_list;
+        }
+        elseif(is_array($info->result))
+        {
+            $deptList = $info->result;
+        }
 
         $this->log('getSubDepartments() dept_id=' . $deptId . ' 获取到 ' . count($deptList) . ' 个子部门');
 
@@ -447,6 +455,8 @@ class dingtalkModel extends model
 
             /* Retry with fresh token if access_token is expired. */
             $result = $this->refreshTokenOnExpiry($result, $url, $params);
+
+            $this->log('getUserListByDept() dept_id=' . $deptId . ' 返回结果:' . $result);
 
             if(empty($result))
             {
